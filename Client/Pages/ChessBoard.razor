@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using BlazorChess.Shared
+
+<h1>@player</h1>
+<div id="app" class="flex justify-center items-center h-screen">
+    <div class="chessboard-container">
+        <div class="chessboard">
+            @for (var i = 0; i < 8; i++)
+            {
+                for (var j = 0; j < 8; j++)
+                {
+                    var tile = gameState.Board[i, j];
+                    <div class="@((i + j) % 2 == 0 ? "bg-cyan-300" : "bg-cyan-600") flex justify-center items-center @(i == 0 && j == 0 ? "top-left" : "") @(i == 0 && j == 7 ? "top-right" : "") @(i == 7 && j == 0 ? "bottom-left" : "") @(i == 7 && j == 7 ? "bottom-right" : "")" @onclick="() => TileClicked(tile)">
+                        <i id="@tile.Id" class="piece @(tile == selectedTile ? "fa-bounce" : "") @tile.Piece" style="color: @tile.PieceColor; font-size: 2.5rem; padding: 0.5rem;">
+                            @(tile.Piece == "fa-sharp fa-solid" ? "\u200B" : null)
+                        </i>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+
+    [Parameter] public int player { get; set; }
+    [Parameter] public HubConnection? hubConnection { get; set; }
+    [Parameter] public string LobbyID { get; set; }
+
+
+    [Parameter] public GameState? gameState { get; set; }
+
+    GameState.Tile? selectedTile = null;
+
+    protected override void OnInitialized()
+    {
+     
+    }
+
+    
+
+    void TileClicked(GameState.Tile clickedTile)
+    {
+        // Checking player number and the piece's color
+        string playerColor = player == 1 ? "black" : "white";
+
+        if (selectedTile == null)
+        {
+            // If the clicked tile's color matches the player's color
+            if (clickedTile.PieceColor == playerColor)
+            {
+                selectedTile = clickedTile;
+            }
+        }
+        else
+        {
+            if (clickedTile != selectedTile)
+            {
+                // Make the move 
+                clickedTile.Piece = selectedTile.Piece;
+                clickedTile.PieceColor = selectedTile.PieceColor;
+
+                // Clear the selected tile
+                selectedTile.Piece = "fa-sharp fa-solid";
+                selectedTile.PieceColor = "";
+
+                // Send the move to the server
+                hubConnection.SendAsync("MakeMove", LobbyID ,player, selectedTile.Row, selectedTile.Col, clickedTile.Row, clickedTile.Col);
+
+                // Clear the selected tile
+                selectedTile = null;
+            }
+        }
+
+        //StateHasChanged();
+    }
+
+
+}

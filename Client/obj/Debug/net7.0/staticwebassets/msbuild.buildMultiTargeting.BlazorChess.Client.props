@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\BlazorChess.Client.props" />
+</Project>

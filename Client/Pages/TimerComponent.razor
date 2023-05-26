@@ -1,0 +1,71 @@
+﻿@using System.Timers
+
+<div class="flex items-center justify-center mt-4">
+    <div class="text-center">
+        <p class="text-lg font-bold text-gray-900">@FormatTime(timeLeft)</p>
+        <button @onclick="ToggleTimer" class="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-500 focus:outline-none focus:border-cyan-700 focus:shadow-outline-indigo active:bg-cyan-700 transition ease-in-out duration-150">
+            @GetTimerButtonText()
+        </button>
+    </div>
+</div>
+
+@code {
+    Timer timer;
+    int timeLeft = 60; // Initial time in seconds (5 minutes)
+    bool isRunning = false;
+
+    protected override void OnInitialized()
+    {
+        timer = new Timer(1000);
+        timer.Elapsed += TimerElapsed;
+    }
+
+    void TimerElapsed(object sender, ElapsedEventArgs e)
+    {
+        if (timeLeft > 0)
+        {
+            timeLeft--;
+            StateHasChanged();
+        }
+        else
+        {
+            StopTimer();
+            // Perform any actions when the timer reaches 0
+        }
+    }
+
+    string FormatTime(int timeInSeconds)
+    {
+        TimeSpan timeSpan = TimeSpan.FromSeconds(timeInSeconds);
+        return timeSpan.ToString(@"mm\:ss");
+    }
+
+    void ToggleTimer()
+    {
+        if (isRunning)
+        {
+            StopTimer();
+        }
+        else
+        {
+            StartTimer();
+        }
+    }
+
+    void StartTimer()
+    {
+        timer.Start();
+        isRunning = true;
+    }
+
+    void StopTimer()
+    {
+        timer.Stop();
+        isRunning = false;
+    }
+
+    string GetTimerButtonText()
+    {
+        return isRunning ? "Stop Timer" : "Start Timer";
+    }
+}

@@ -1,0 +1,35 @@
+/* Apply the background color to the outer container */
+#app[b-xngup9ttt7] {
+}
+
+.chessboard-container[b-xngup9ttt7] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh; /* Adjust the height as needed */
+}
+
+.chessboard[b-xngup9ttt7] {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 0;
+    width: 90vh; /* Adjust the width to control the size of the chessboard */
+    max-width: 90vw; /* Set a maximum width to limit the size on larger screens */
+    aspect-ratio: 1/1; /* Maintain a square aspect ratio */
+}
+
+.top-left[b-xngup9ttt7] {
+    border-top-left-radius: 10px;
+}
+
+.top-right[b-xngup9ttt7] {
+    border-top-right-radius: 10px;
+}
+
+.bottom-left[b-xngup9ttt7] {
+    border-bottom-left-radius: 10px;
+}
+
+.bottom-right[b-xngup9ttt7] {
+    border-bottom-right-radius: 10px;
+}

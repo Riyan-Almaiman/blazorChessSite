@@ -1,0 +1,86 @@
+﻿@page "/game/{LobbyID}"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager Navigation
+@inject HttpClient Http
+
+@if (!bothPlayersJoined)
+{
+    <Gamemodal LobbyID="@LobbyID" />
+}
+
+@if (gameState != null)
+{
+    <ChessBoard LobbyID = "@LobbyID" gameState="@gameState" hubConnection="@hubConnection" player="@player"></ChessBoard>
+}
+
+
+@code {
+    public HubConnection? hubConnection;
+    [Parameter]
+    public string? LobbyID { get; set; }
+    public int player = 0;
+    public GameState? gameState { get; set; }
+
+    private bool bothPlayersJoined = false;
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine(LobbyID);
+        var response = await Http.GetAsync($"/lobby/{LobbyID}/join");
+        var isLobbyFull = await response.Content.ReadAsStringAsync();
+
+
+        if (isLobbyFull == "full")
+        {
+            Navigation.NavigateTo("/");
+            return;
+        }
+
+        hubConnection = new HubConnectionBuilder()
+           .WithUrl(Navigation.ToAbsoluteUri("/gamehub")).AddNewtonsoftJsonProtocol()
+
+       .Build();
+
+        Console.WriteLine(hubConnection.ConnectionId);
+        hubConnection.On<GameState>("playerJoined", (gameStateServer) =>
+            {
+
+                gameState = gameStateServer;
+                Console.WriteLine(gameStateServer.player1ConnectionID);
+
+                bothPlayersJoined = true;
+
+                StateHasChanged();
+            });
+        hubConnection.On<string>("playerDisconnected", (message) =>
+       {
+           Console.WriteLine(message);
+           bothPlayersJoined = false;
+           StateHasChanged(); 
+       });
+        hubConnection.On<GameState>("ReceiveGameState", (gameStateServer) =>
+    {
+
+        gameState = gameStateServer;
+
+        if(gameStateServer.player1ConnectionID == hubConnection.ConnectionId){ player = 1; }
+        if(gameStateServer.player2ConnectionID == hubConnection.ConnectionId) { player = 2; }
+
+
+        Console.WriteLine(gameStateServer.player1ConnectionID);
+
+        StateHasChanged();
+
+    });
+
+        await hubConnection.StartAsync();
+        
+        await AddToLobby();
+        
+        Console.WriteLine(hubConnection.ConnectionId);
+    }
+
+    private async Task AddToLobby()
+    {
+        await hubConnection.SendAsync("JoinOrCreateLobby", hubConnection.ConnectionId, LobbyID);
+    }
+}

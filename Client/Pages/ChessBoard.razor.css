@@ -1,0 +1,33 @@
+﻿
+
+.chessboard-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh; 
+}
+
+.chessboard {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 0;
+    width: 90vh;
+    max-width: 90vw; 
+    aspect-ratio: 1/1;
+}
+
+.top-left {
+    border-top-left-radius: 10px;
+}
+
+.top-right {
+    border-top-right-radius: 10px;
+}
+
+.bottom-left {
+    border-bottom-left-radius: 10px;
+}
+
+.bottom-right {
+    border-bottom-right-radius: 10px;
+}
