@@ -7,7 +7,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
-      "BlazorChess.Client.dll": "sha256-Eg1+di\/+QOoguSqZvfqT\/4Efd8U2Fzec5Xfd2hjmjao=",
+      "BlazorChess.Client.dll": "sha256-qfWHS49MODYjr\/AVBLUXS8WCkMzmUnlCy6hUU04rngA=",
       "BlazorChess.Shared.dll": "sha256-ncIaYS6QYVsLN\/ejgIkE5hGN4Km3Ug98gKhIoCgZqBc=",
       "Microsoft.AspNetCore.Components.dll": "sha256-9dsxqnQ8EAr+evuU73+6HYG4aj\/AghOkiBlxs0gUv3M=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-UnIGQFqnXGoP7xA\/ftzRiN+1v3dnNmBmIUqreDSwbBE=",

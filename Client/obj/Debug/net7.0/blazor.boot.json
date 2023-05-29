@@ -210,14 +210,14 @@
       "netstandard.dll": "sha256-kj5cBXzwPYC+HD+P8+6VybY34JtEzjXjMIHXEI3hIiM=",
       "System.Private.CoreLib.dll": "sha256-Awk1lCiFfH7r9AAZfBtGqS8rhv6UJ5lUu3yF6HDH3tQ=",
       "BlazorChess.Shared.dll": "sha256-MN+YbtLGDxKuYzjlCfyMKjv2DT8Ns\/WQ1sx4OYZT9\/s=",
-      "BlazorChess.Client.dll": "sha256-ptFnae8fjgQC3\/fE5PxEBTLfUoOy32aWoZCqVc5JuYg="
+      "BlazorChess.Client.dll": "sha256-0T4\/YLugYdqXRbt\/QIVLK+jLOTkk3rNTgy9wlPtRa7w="
     },
     "extensions": null,
     "lazyAssembly": null,
     "libraryInitializers": null,
     "pdb": {
       "BlazorChess.Shared.pdb": "sha256-Uyd3nRo70XqH0rZsaA7AW7OLw967MilGVXriY01DMxg=",
-      "BlazorChess.Client.pdb": "sha256-ca9vgN9fGxsLSOtNg\/uBsanqJeS6\/mgszMuPu7XDUCM="
+      "BlazorChess.Client.pdb": "sha256-Tox4GV8MHsmqId3ZsKmiZGlJq6xJZOsJDVZ\/RZMzbYI="
     },
     "runtime": {
       "dotnet.7.0.0.aazfxox7xp.js": "sha256-2jNLve8W0sST0LAebgAc1IwSnGhkbjOKO8QPWWiJssI=",

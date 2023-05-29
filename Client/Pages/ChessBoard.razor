@@ -14,7 +14,7 @@
                 for (var j = 0; j < 8; j++)
                 {
                     var tile = gameState.Board[i, j];
-                    <div class=" @(IsPossibleMove(i,j) ? "bg-red-300 border border-red-800 " : (i + j) % 2 == 0 ? "bg-cyan-300" : "bg-cyan-600") flex justify-center items-center @(i == 0 && j == 0 ? "top-left" : "") @(i == 0 && j == 7 ? "top-right" : "") @(i == 7 && j == 0 ? "bottom-left" : "") @(i == 7 && j == 7 ? "bottom-right" : "") " @onclick="() => TileClicked(tile)">
+                    <div class=" @(IsPossibleMove(i,j) ? "bg-red-200 border border-red-800 " : (i + j) % 2 == 0 ? "bg-amber-300" : "bg-amber-600") flex justify-center items-center @(i == 0 && j == 0 ? "top-left" : "") @(i == 0 && j == 7 ? "top-right" : "") @(i == 7 && j == 0 ? "bottom-left" : "") @(i == 7 && j == 7 ? "bottom-right" : "") " @onclick="() => TileClicked(tile)">
                         <i id="@tile.Id" class="piece @(tile == selectedTile ? "fa-bounce" : "") @tile.Piece" style="color: @tile.PieceColor; font-size: 2.5rem; padding: 0.5rem;">
                             @(tile.Piece == "fa-sharp fa-solid" ? "\u200B" : null)
                         </i>
@@ -27,7 +27,7 @@
                 for (var j = 7; j >=0; j--)
                 {
                     var tile = gameState.Board[i, j];
-                        <div class=" @(IsPossibleMove(i,j) ? "bg-red-300 border border-red-800 " : (i + j) % 2 == 0 ? "bg-cyan-300" : "bg-cyan-600") flex justify-center items-center @(i == 0 && j == 0 ? "bottom-right" : "") @(i == 0 && j == 7 ? "bottom-left" : "") @(i == 7 && j == 0 ? "top-right" : "") @(i == 7 && j == 7 ? "top-left" : "") " @onclick="() => TileClicked(tile)">
+                        <div class=" @(IsPossibleMove(i,j) ? "bg-red-200 border border-red-800" : (i + j) % 2 == 0 ? "bg-amber-300" : "bg-amber-600") flex justify-center items-center @(i == 0 && j == 0 ? "bottom-right" : "") @(i == 0 && j == 7 ? "bottom-left" : "") @(i == 7 && j == 0 ? "top-right" : "") @(i == 7 && j == 7 ? "top-left" : "") " @onclick="() => TileClicked(tile)">
                         <i id="@tile.Id" class="piece @(tile == selectedTile ? "fa-bounce" : "") @tile.Piece" style="color: @tile.PieceColor; font-size: 2.5rem; padding: 0.5rem;">
                             @(tile.Piece == "fa-sharp fa-solid" ? "\u200B" : null)
                         </i>
@@ -45,7 +45,6 @@
     <div class="fixed inset-0 flex items-center justify-center z-50">
         <div class="bg-white p-8 rounded-lg shadow-lg">
             <h2 class="text-xl text-red-800  font-bold mb-4">Game Over</h2>
-            <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none">Close</button>
         </div>
     </div>
 }
@@ -86,11 +85,20 @@
             }
         }
 
-        if (clickedTile.PieceColor == playerColor && possiblemoves.Count > 0)
+        if (clickedTile.PieceColor == playerColor)
         {
-            selectedTile = clickedTile;
-            StateHasChanged();
+            if (possiblemoves.Count > 0)
+            {
+                selectedTile = clickedTile;
+                StateHasChanged();
+            }
+            else
+            {
+                selectedTile=null;
+                StateHasChanged();
+            }
         }
+
 
         else
         {
