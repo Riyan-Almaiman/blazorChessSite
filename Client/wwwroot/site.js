@@ -18,5 +18,12 @@ window.chessFunctions = {
         let moves = game.moves({ square: square, verbose: false })
         console.log(moves)
         return moves; 
+    },
+
+       getCheckmateStatus: function (fen) {
+        let game = new Chess(fen);
+           let isCheckmate = game.game_over();
+           console.log(isCheckmate);
+        return isCheckmate;
     }
 }

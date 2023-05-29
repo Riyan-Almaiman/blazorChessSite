@@ -10,6 +10,12 @@ namespace BlazorChess.Shared
 
         public int turnNumber { get; set; } = 1; 
 
+        public List<string>? capturedPieces { get; set; }
+
+        public bool IsGameOver()
+        {
+            return capturedPieces?.Any(p => p.Equals("k", StringComparison.OrdinalIgnoreCase)) ?? false;
+        }
         public Tile[,] Board { get; set; }
 
         public GameState()
