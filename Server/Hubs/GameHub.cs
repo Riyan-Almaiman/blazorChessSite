@@ -131,7 +131,7 @@ namespace BlazorChess.Server.Hubs
 
             sourceTile.Piece = "fa-sharp fa-solid";
             sourceTile.PieceColor = "";
-
+            gameState.turnNumber++;
             // send the updated game state to both players
             if (gameState.player1ConnectionID != null)
             {

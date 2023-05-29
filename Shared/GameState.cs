@@ -8,7 +8,7 @@ namespace BlazorChess.Shared
 
         public string? player2ConnectionID { get; set; }
 
-        public int turnNumber { get; set; } = 0; 
+        public int turnNumber { get; set; } = 1; 
 
         public Tile[,] Board { get; set; }
 
@@ -23,7 +23,7 @@ namespace BlazorChess.Shared
                     Board[i, j] = new Tile
                     {
                         Piece = Pieces.InitialSetup(i, j),
-                        PieceColor = i < 2 ? "white" : (i > 5 ? "black" : ""),
+                        PieceColor = i < 2 ? "black" : (i > 5 ? "white" : ""),
                         Row = i,
                         Col = j
                     };

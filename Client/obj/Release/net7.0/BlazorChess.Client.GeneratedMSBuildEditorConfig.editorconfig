@@ -36,10 +36,6 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Riyan/source/repos/BlazorChess/Client/Pages/JoinLobbyModal.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSm9pbkxvYmJ5TW9kYWwucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/Riyan/source/repos/BlazorChess/Client/Pages/TimerComponent.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGltZXJDb21wb25lbnQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 

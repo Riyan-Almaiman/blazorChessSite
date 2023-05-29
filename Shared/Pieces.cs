@@ -16,7 +16,7 @@
             {
                 if (column == 0 || column == 7)
                 {
-                    return Pawn;
+                    return Pieces.Rook;
                 }
                 else if (column == 1 || column == 6)
                 {
@@ -69,6 +69,7 @@
 
             return "fa-sharp fa-solid";
         }
+
 
     }
 
