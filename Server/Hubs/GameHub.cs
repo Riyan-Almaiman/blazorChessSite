@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using BlazorChess.Shared;
 using System.Text.Json;
+using BlazorChess.Client.Pages;
 
 namespace BlazorChess.Server.Hubs
 {
@@ -114,7 +115,7 @@ namespace BlazorChess.Server.Hubs
             }
         }
 
-        public async Task MakeMove(string lobbyID, int player, int sourceRow, int sourceCol, int destRow, int destCol)
+        public async Task MakeMove(string lobbyID, int player, int sourceRow, int sourceCol, int destRow, int destCol, bool ispromotion)
         {
             // Find the game state by lobby ID
             if (!gameLobbies.TryGetValue(lobbyID, out var gameState))
@@ -126,7 +127,17 @@ namespace BlazorChess.Server.Hubs
             GameState.Tile sourceTile = gameState.Board[sourceRow, sourceCol];
             GameState.Tile destinationTile = gameState.Board[destRow, destCol];
 
-            destinationTile.Piece = sourceTile.Piece;
+            if (ispromotion)
+            {
+                destinationTile.Piece = Pieces.Queen;
+
+
+            }
+            else
+            {
+                destinationTile.Piece = sourceTile.Piece;
+
+            }
             destinationTile.PieceColor = sourceTile.PieceColor;
 
             sourceTile.Piece = "fa-sharp fa-solid";

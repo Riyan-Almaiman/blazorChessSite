@@ -14,8 +14,8 @@ window.chessFunctions = {
     getLegalMoves: function (fen, square) {
         game = new Chess(fen);
         console.log(game.ascii());
-        
-        let moves = game.moves({ square: square, verbose: false })
+
+        let moves = game.moves({ square: square, verbose: true })
         console.log(moves)
         return moves; 
     },

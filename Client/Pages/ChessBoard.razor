@@ -2,6 +2,7 @@
 @using BlazorChess.Shared
 @using System.Text
 
+
 @inject IJSRuntime JSRuntime
 
 <h1>@player</h1>
@@ -41,7 +42,7 @@
 
         </div>
 
-        <p style="font-family:Courier New; font-weight:800; margin: 20px; padding:0;">Click on a piece to select it, if there are any valid moves they will show up. Some rules still not supported (like pawn promotion)</p>
+        <p style="font-family:Courier New; font-weight:800; margin: 20px; padding:0;">Click on a piece to select it, if there are any valid moves they will show up. Some rules still not supported. </p>
 
     </div>
 </div>
@@ -61,12 +62,14 @@
 
     [Parameter] public int player { get; set; }
     [Parameter] public HubConnection? hubConnection { get; set; }
-    [Parameter] public string LobbyID { get; set; } 
+    [Parameter] public string? LobbyID { get; set; } 
     [Parameter] public bool isGameOver { get; set; }
-
     [Parameter] public GameState? gameState { get; set; }
 
-    public List<string> possiblemoves; 
+    public List<string>? possiblemoves;
+    public List<string>? possiblepromotions = new List<string>();
+
+
     GameState.Tile? selectedTile = null;
 
 
@@ -84,10 +87,11 @@
 
         if (clickedTile.PieceColor == playerColor)
         {
-            var rawMoves = await JSRuntime.InvokeAsync<List<string>>("chessFunctions.getLegalMoves", ToFen(gameState), ConvertNotation(clickedTile.Row, clickedTile.Col));
-            possiblemoves = rawMoves.Select(move => ParseSan(move)).ToList();
+            var rawMoves = await JSRuntime.InvokeAsync<List<string>>("chessFunctions.getLegalMoves", FormatService.ToFen(gameState), FormatService.ConvertNotation(clickedTile.Row, clickedTile.Col));
+            possiblemoves = rawMoves.Select(move => FormatService.ParseSan(move)).ToList();
             foreach (string move in possiblemoves)
             {
+                if(move.Contains('=')){ possiblepromotions.Add(move);  }
                 Console.WriteLine(move);
             }
         }
@@ -112,7 +116,18 @@
             if (clickedTile != selectedTile && IsPossibleMove(clickedTile.Row, clickedTile.Col))
             {
                 // Make the move
-                clickedTile.Piece = selectedTile.Piece;
+                bool ispromotion = possiblepromotions.Contains(FormatService.ConvertNotation(clickedTile.Row, clickedTile.Col) + '=');
+                if (ispromotion)
+                {
+                    clickedTile.Piece = Pieces.Queen;
+
+                }
+                else
+                {
+                    clickedTile.Piece = selectedTile.Piece;
+                }
+
+
                 clickedTile.PieceColor = selectedTile.PieceColor;
 
                 // Clear the selected tile
@@ -120,125 +135,27 @@
                 selectedTile.PieceColor = "";
 
                 // Send the move to the server
-                hubConnection.SendAsync("MakeMove", LobbyID, player, selectedTile.Row, selectedTile.Col, clickedTile.Row, clickedTile.Col);
+                hubConnection.SendAsync("MakeMove", LobbyID, player, selectedTile.Row, selectedTile.Col, clickedTile.Row, clickedTile.Col, ispromotion);
 
                 // Clear the selected tile
                 selectedTile = null;
                 possiblemoves.Clear();
-               
-               
-                
+
+
+
 
             }
         }
     }
 
-    // Parse Standard Algebraic Notation (SAN) to get the destination tile of the move
-    string ParseSan(string san)
-    {
-        // Remove check (+) and checkmate (#) symbols
-        san = san.TrimEnd('+', '#');
 
-        // Remove capture (x) symbol
-        san = san.Replace("x", "");
-
-        // If it's a pawn promotion, only keep the destination tile
-        if (san.Contains("="))
-        {
-            san = san.Split('=')[0];
-        }
-
-        // The destination tile is the last two characters
-        return san[^2..];
-    }
-
-    public string ConvertNotation(int row, int col)
+    public bool IsPossibleMove(int row, int col)
     {
         // Convert row and column to algebraic notation
-        char file = (char)('a' + col);
-        int rank = 8 - row;
-        return $"{file}{rank}";
-    }
-    public string ToFen(GameState gameState)
-    {
-        var fen = new StringBuilder();
+        string notation = FormatService.ConvertNotation(row, col);
 
-        for (int i = 0; i < 8; i++)
-        {
-            int empty = 0;
-            for (int j = 0; j < 8; j++)
-            {
-                var tile = gameState.Board[i, j];
-                if (tile.Piece == "fa-sharp fa-solid")
-                {
-                    empty++;
-                }
-                else
-                {
-                    if (empty > 0)
-                    {
-                        fen.Append(empty);
-                        empty = 0;
-                    }
-                    // Add piece to the FEN string
-                    // Convert your Piece representation to a single character (p,n,b,r,q,k)
-                    var pieceChar = ConvertPieceToChar(tile.Piece);
-                    fen.Append(tile.PieceColor == "black" ? char.ToLower(pieceChar) : pieceChar);
-                }
-            }
-            if (empty > 0)
-            {
-                fen.Append(empty);
-            }
-            fen.Append("/");
-        }
-        // Trimming last '/'
-        fen.Remove(fen.Length - 1, 1);
-
-        // Add other required FEN fields: active color, castling availability, en passant square, halfmove clock and fullmove number
-        string activeColor = gameState.turnNumber%2 == 0 ? "b" : "w";  // Assuming ActivePlayer is a new field in GameState
-        fen.Append($" {activeColor} KQkq - 0 1");
-        return fen.ToString();
+        // Check if the notation is in the list of possible mov
+        return possiblemoves != null && (possiblemoves.Contains(notation) || possiblemoves.Contains(notation + '='));
     }
-   
-   public char ConvertPieceToChar(string piece)
-{
-    if (piece == Pieces.Pawn)
-    {
-        return 'P';
-    }
-    else if (piece == Pieces.Rook)
-    {
-        return 'R';
-    }
-    else if (piece == Pieces.Knight)
-    {
-        return 'N';
-    }
-    else if (piece == Pieces.Bishop)
-    {
-        return 'B';
-    }
-    else if (piece == Pieces.Queen)
-    {
-        return 'Q';
-    }
-    else if (piece == Pieces.King)
-    {
-        return 'K';
-    }
-    else
-    {
-        throw new Exception("Unknown piece: " + piece);
-    }
-}
-public bool IsPossibleMove(int row, int col)
-{
-    // Convert row and column to algebraic notation
-    string notation = ConvertNotation(row, col);
-
-    // Check if the notation is in the list of possible moves
-    return possiblemoves != null && possiblemoves.Contains(notation);
-}
   
 }
